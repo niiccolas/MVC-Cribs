@@ -1,103 +1,129 @@
 package Vue;
 
+import Controller.HouseBuilder;
 import Model.House;
-import Model.Room;
-
-import java.util.Scanner;
 
 public class Menu {
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLUE  = "\u001B[34m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_RED   = "\u001B[31m";
+    private House house;
 
-
-    public static void buildHouse() {
-        Scanner input = new Scanner(System.in);
-        displayPrompt("Enter a name for your house: ");
-
-        String houseName = input.nextLine();
-        System.out.println("*** The House of " + houseName + " ***");
-
-        // La maison à forcément une pièce entrée
-        String[] entranceFurniture = {"welcome rug"};
-        Room entrance = new Room("Entrance", 5, entranceFurniture);
-
-        Room[] houseRooms = {entrance};
-        House newHouse = new House(houseName, houseRooms);
-
-        newHouse.displayInfos();
+    public void setHouse(House house) {
+      this.house = house;
     }
 
-    public static void addRoom() {
+    public void mainMenu() {
+        UITools.clearScreen();
+        UITools.header("MVC CRIBS");
 
-    }
-
-    public static void clearScreen() {
-      System.out.print("\033[H\033[2J");
-      System.out.flush();
-    }
-
-    public static void mainMenu() {
-        Scanner kb = new Scanner(System.in);
-        int userInput;
-
-        clearScreen();
-        displayHeader("MVC CRIBS 🏠  -------");
+        if (house != null) {
+          UITools.header("[HOUSE OF " + house + " ]");
+        }
 
         while (true) {
             try {
-                System.out.println("1. Build your house");
-                System.out.println("2. Explore your house");
-                System.out.println("3. Exit");
-                displayPrompt("ENTER YOUR CHOICE: ");
-                userInput = Integer.parseInt(kb.nextLine());
+                System.out.println("1. Build house");
+                System.out.println("2. Explore house");
+                System.out.println("3. Help");
+                System.out.println("4. Exit");
+
+                int userInput = UITools.getInt();
 
                 if(userInput == 1) {
-                  buildHouse();
-                } else if (userInput == 2) {
-                  exploreHouse();
+
+                  this.house = HouseBuilder.build();
+                  buildMenu();
                   break;
-                } else if (userInput == 3) {
-                  displayWarning("EXITING PROGRAM. BYE 👋");
+                } else if (userInput == 2) {
+                  exploreMenu();
+                  break;
+                } else if (userInput == 4) {
+                  UITools.warning("EXITING PROGRAM. BYE 👋");
                   break;
                 } else {
-                  displayWarning("NOT A VALID MENU ITEM! RETRY");
+                  UITools.warning("NOT A VALID MENU ITEM! RETRY");
                 }
 
             } catch (NumberFormatException nfe) {
-                displayWarning("INTEGERS ONLY! RETRY");
+                UITools.warning("INTEGERS ONLY! RETRY");
             }
         }
     }
 
-    private static void exploreHouse() {
-      System.out.println("exploring the house");
+    public void buildMenu() {
+        UITools.clearScreen();
+
+        UITools.header("MVC CRIBS ⪢ BUILD");
+
+        while (true) {
+          try {
+              System.out.println("1. Add Room");
+              System.out.println("2. Remove Room");
+              System.out.println("3. Main Menu");
+
+              int userInput = UITools.getInt();
+
+              if(userInput == 1) {
+                addRoom();
+                break;
+              } else if (userInput == 2) {
+                removeRoom();
+                break;
+              } else if (userInput == 3) {
+                this.mainMenu();
+                break;
+              } else {
+                UITools.warning("NOT A VALID MENU ITEM! RETRY");
+              }
+
+          } catch (NumberFormatException nfe) {
+              UITools.warning("INTEGERS ONLY! RETRY");
+          }
+        }
+      }
+
+      public void exploreMenu() {
+        UITools.clearScreen();
+        UITools.header("MVC CRIBS ⪢ EXPLORE");
+
+        while (true) {
+          try {
+              System.out.println("   ┌─────────────────────┐");
+              System.out.println("   │ [1] Show House Plan │");
+              System.out.println("   │ [2] Visit House     │");
+              System.out.println("   │ [3] Main Menu       │");
+              System.out.println("   └─────────────────────┘");
+
+              int userInput = UITools.getInt();
+
+              if(userInput == 1) {
+                displayPlan();
+                break;
+              } else if (userInput == 2) {
+                visitHouse();
+                break;
+              } else if (userInput == 3) {
+                this.mainMenu();
+                break;
+              } else {
+                UITools.warning("NOT A VALID MENU ITEM! RETRY");
+              }
+
+          } catch (NumberFormatException nfe) {
+              UITools.warning("INTEGERS ONLY! RETRY");
+          }
+        }
     }
 
-    public static void buildMenu() {
-        System.out.println("BUILD MENU");
-        System.out.println("1. Add Room");
-        System.out.println("2. Remove Room");
-        System.out.println("3. Exit");
-    }
+  private void displayPlan() {
+    this.house.displayInfos();
+  }
 
-    public static void exploreMenu() {
-        System.out.println("BUILD MENU");
-        System.out.println("1. Add Room");
-        System.out.println("2. Remove Room");
-        System.out.println("3. Exit");
-    }
+  private static void visitHouse() {
+  }
 
-    public static void displayPrompt(String message) {
-        System.out.print(ANSI_BLUE + ">  " + message.toUpperCase() + ANSI_RESET);
-    }
+  private static void addRoom() {
+    HouseBuilder.addRoom();
+  }
 
-    public static void displayHeader(String message) {
-        System.out.println(ANSI_GREEN + ">  " + message.toUpperCase() + ANSI_RESET);
-    }
-
-    public static void displayWarning(String message) {
-        System.out.print(ANSI_RED + ">  " + message.toUpperCase() + "\n" + ANSI_RESET);
-    }
+  private static void removeRoom() {
+  }
 }
