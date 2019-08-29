@@ -10,6 +10,9 @@ public class House {
     }
 
     public void displayInfos() {
+      System.out.println("Your are in the house of: " + name);
+      System.out.println("here are the rooms");
+
         for (Room room : rooms) {
             room.displayInfos();
         }
